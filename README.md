@@ -4,6 +4,10 @@ Makes the record players in V's apartments spin the right way (clockwise, like a
 
 This answers the Nexus forum request [Is anybody else bothered that the record players in the apartments rotate the wrong way?](https://forums.nexusmods.com/topic/13547437-is-anybody-else-bothered-that-the-record-players-in-the-apartments-rotate-the-wrong-way/).
 
+## Preview
+
+[In-game recording](media/vinyl-fix-in-game.mp4) with the mod installed (game 2.5): the tonearm swings onto the record, and the record spins clockwise at 33⅓ RPM, one turn every 1.8 s. Without the mod it spins counter-clockwise at 60 RPM.
+
 ## Requirements
 
 - [RED4ext](https://www.nexusmods.com/cyberpunk2077/mods/2380)
