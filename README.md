@@ -6,7 +6,7 @@ This answers the Nexus forum request [Is anybody else bothered that the record p
 
 ## Preview
 
-[In-game recording](media/vinyl-fix-in-game.mp4) with the mod installed (game 2.5): the tonearm swings onto the record, and the record spins clockwise at 33⅓ RPM, one turn every 1.8 s. Without the mod it spins counter-clockwise at 60 RPM.
+[In-game recording](https://youtu.be/9r_QjCPEqBw) ([local copy](media/vinyl-fix-in-game.mp4)) with the mod installed (game 2.5): the tonearm swings onto the record, and the record spins clockwise at 33⅓ RPM, one turn every 1.8 s. Without the mod it spins counter-clockwise at 60 RPM.
 
 ## Requirements
 
