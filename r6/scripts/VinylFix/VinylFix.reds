@@ -32,7 +32,9 @@ public class VinylFixService extends ScriptableService {
       if IsDefined(animator) {
         patched += this.PatchAnimator(animator);
       }
-      components = components + s" \(NameToString(component.GetClassName()))";
+      if VinylFixConfig.DebugLog() {
+        components = components + s" \(NameToString(component.GetClassName()))";
+      }
     }
 
     if VinylFixConfig.DebugLog() {
@@ -102,12 +104,9 @@ public class VinylFixService extends ScriptableService {
     let fullRotationTime = 60.0 / VinylFixConfig.TargetRPM();
     for node in sector.GetNodes() {
       let rotating = node as worldRotatingMeshNode;
+      // PostLoad fires once per sector load, and every load deserializes
+      // fresh nodes, so each node is seen exactly once.
       if IsDefined(rotating) && VinylFixTargets.IsRecordMesh(ResourceAsyncRef.GetPath(rotating.mesh)) {
-        // A node already at the target speed has been patched before.
-        if VinylFixConfig.FixSpeed() && AbsF(rotating.fullRotationTime - fullRotationTime) < 0.001 {
-          continue;
-        }
-
         if VinylFixConfig.FixDirection() {
           rotating.reverseDirection = !rotating.reverseDirection;
         }

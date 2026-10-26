@@ -36,7 +36,7 @@ Record player entities:
 | Epilogue (*q204*) | `base\quest\main_quests\epilogue\q204\entities\q204_record_player.ent` |
 | Dogtown (*q305*) | `ep1\items\quest\q305__record_player.ent` |
 
-It also patches any record mesh (`base\environment\decoration\misc\music\vinyl\*_record*.mesh`) that a world sector places as a `worldRotatingMeshNode`.
+It also patches the record meshes listed in `Targets.reds` (from `base\environment\decoration\misc\music\vinyl\`) wherever a world sector places one as a `worldRotatingMeshNode`.
 
 ## How it works
 
