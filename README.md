@@ -2,6 +2,8 @@
 
 Makes the record players in V's apartments spin the right way (clockwise, like a real turntable) and at a real record speed (33⅓ RPM by default).
 
+**Download:** [Nexus Mods](https://www.nexusmods.com/cyberpunk2077/mods/36113) or [GitHub releases](https://github.com/La2o/CyberPunk2077-VinylFix/releases).
+
 This answers the Nexus forum request [Is anybody else bothered that the record players in the apartments rotate the wrong way?](https://forums.nexusmods.com/topic/13547437-is-anybody-else-bothered-that-the-record-players-in-the-apartments-rotate-the-wrong-way/).
 
 ## Preview
