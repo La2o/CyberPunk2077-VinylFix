@@ -12,8 +12,10 @@ public abstract class VinylFixConfig {
   public static func FixSpeed() -> Bool = true
 
   // Also patch record meshes placed directly in the world as rotating
-  // mesh nodes (not part of a record player device).
-  public static func PatchWorldNodes() -> Bool = true
+  // mesh nodes (not part of a record player device). Off by default:
+  // experimental and untested in game, and it makes Codeware inspect every
+  // resource the game loads.
+  public static func PatchWorldNodes() -> Bool = false
 
   // Write what the mod patched to the log. Useful while testing.
   public static func DebugLog() -> Bool = true

@@ -12,15 +12,17 @@ This answers the Nexus forum request [Is anybody else bothered that the record p
 
 ## Installation
 
-Copy the `r6` folder into your Cyberpunk 2077 install folder, so you end up with:
+Copy the `r6` and `red4ext` folders into your Cyberpunk 2077 install folder, so you end up with:
 
 ```
 Cyberpunk 2077/r6/scripts/VinylFix/Config.reds
+Cyberpunk 2077/r6/scripts/VinylFix/Native.reds
 Cyberpunk 2077/r6/scripts/VinylFix/Targets.reds
 Cyberpunk 2077/r6/scripts/VinylFix/VinylFix.reds
+Cyberpunk 2077/red4ext/plugins/VinylFix/VinylFix.dll
 ```
 
-To uninstall, delete `r6/scripts/VinylFix`. The mod doesn't change your save, so removing it is safe.
+To uninstall, delete `r6/scripts/VinylFix` and `red4ext/plugins/VinylFix`. The mod doesn't change your save, so removing it is safe.
 
 ## What it covers
 
@@ -36,14 +38,16 @@ Record player entities:
 | Epilogue (*q204*) | `base\quest\main_quests\epilogue\q204\entities\q204_record_player.ent` |
 | Dogtown (*q305*) | `ep1\items\quest\q305__record_player.ent` |
 
-It also patches the record meshes listed in `Targets.reds` (from `base\environment\decoration\misc\music\vinyl\`) wherever a world sector places one as a `worldRotatingMeshNode`.
+Optionally (`PatchWorldNodes`, off by default), it also patches the record meshes listed in `Targets.reds` (from `base\environment\decoration\misc\music\vinyl\`) wherever a world sector places one as a `worldRotatingMeshNode`.
 
 ## How it works
 
-The mod uses Codeware callbacks:
+The mod uses Codeware callbacks and a small RED4ext plugin:
 
-- **`Entity/Assemble`** on the record player templates above. For each `gameTransformAnimatorComponent`, the mod finds every `gameTransformAnimation_RotateOnAxis` track and flips its `reverseDirection`. On a looping timeline that holds only the spin, it also sets the definition's `timeScale` so one full turn takes `60 / TargetRPM` seconds, and makes the movement linear.
-- **`Resource/PostLoad`** on `worldStreamingSector`. For `worldRotatingMeshNode`s that use a record mesh, the mod flips `reverseDirection` and sets `fullRotationTime = 60 / TargetRPM`.
+- **`Entity/Assemble`** on the record player templates above. For each `gameTransformAnimatorComponent`, the script calls the plugin's `VinylFix_PatchAnimator`. In every looping animation (the platter spin, `play_record`), the plugin flips the `reverseDirection` of each `gameTransformAnimation_RotateOnAxis` track. One-shot animations, like the tonearm swing (`play_arm`), are left alone. On a timeline that holds only the spin, it also sets the definition's `timeScale` so one full turn takes `60 / TargetRPM` seconds, and makes the movement linear.
+
+  The plugin exists because redscript can't touch this data safely. The animator stores its track items (`ISerializable` objects) inline, so reading `animations` from a script copies them, and destroying those copies breaks the originals. The game then crashes when the record player loads. The plugin edits the component in place instead. It only uses RTTI, not game addresses, so it doesn't depend on the game version.
+- **`Resource/PostLoad`** on `worldStreamingSector`, only when `PatchWorldNodes` is on. For `worldRotatingMeshNode`s that use a record mesh, the mod flips `reverseDirection` and sets `fullRotationTime = 60 / TargetRPM`.
 
 All changes are made in memory as entities and sectors load. No game files are replaced, so the mod is compatible with apartment and retexture mods.
 
@@ -56,7 +60,7 @@ Edit `r6/scripts/VinylFix/Config.reds`, then restart the game:
 | `TargetRPM` | `33.333333` | Spin speed. Use `45.0` for singles. |
 | `FixDirection` | `true` | Reverse the spin direction. |
 | `FixSpeed` | `true` | Retime the spin to `TargetRPM`. |
-| `PatchWorldNodes` | `true` | Also patch record meshes placed directly in the world. |
+| `PatchWorldNodes` | `false` | Also patch record meshes placed directly in the world. Experimental and untested in game: it makes Codeware inspect every resource the game loads. |
 | `DebugLog` | `true` | Log every patched record player. Set it to `false` once you've confirmed the mod works. |
 
 ## Testing
@@ -64,6 +68,13 @@ Edit `r6/scripts/VinylFix/Config.reds`, then restart the game:
 1. Install the requirements and the mod, then start the game. If the scripts fail to compile, redscript shows an error popup and writes `r6/logs/redscript_rCURRENT.log`.
 2. Load a save and go to an apartment with a record player. Start it if it has a play interaction.
 3. Check that the platter spins clockwise when seen from above, at about one turn every 1.8 s.
-4. Look for `VinylFix` lines in the game log. The easiest way to see it is the **Game Log** window in the [Cyber Engine Tweaks](https://www.nexusmods.com/cyberpunk2077/mods/107) overlay.
-   - `Patched N spin track(s) ...` means the fix was applied.
-   - `No spin track found ..., components: ...` means that record player spins some other way. Please report the logged component list so support can be added.
+4. Open the newest `red4ext/logs/vinylfix-*.log`. It has one line per patched spin track, for example `Spin track 'play_record': axis 2, 1.00 turn(s) per 1.00s, looping=1, reverse=1, timeScale=0.5556`. `No looping spin track on animator, left unchanged` is normal for the tonearm's animator. If it's the only line for a record player, that record player spins some other way. Please report it so support can be added.
+5. For the script side, `VinylFix` lines also appear in the game log, which you can see in the **Game Log** window of the [Cyber Engine Tweaks](https://www.nexusmods.com/cyberpunk2077/mods/107) overlay.
+
+## Building the plugin
+
+The plugin source is in `src/Main.cpp`. It builds against [RED4ext.SDK](https://github.com/wopss/RED4ext.SDK), which is a git submodule.
+
+1. Install the Visual Studio 2022 C++ build tools.
+2. Run `git submodule update --init`.
+3. Run `build.bat`. It writes `red4ext/plugins/VinylFix/VinylFix.dll`.
