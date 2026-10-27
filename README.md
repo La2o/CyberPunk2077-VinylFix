@@ -84,3 +84,9 @@ The plugin source is in `src/Main.cpp`. It builds against [RED4ext.SDK](https://
 1. Install the Visual Studio 2022 C++ build tools.
 2. Run `git submodule update --init`.
 3. Run `build.bat`. It writes `red4ext/plugins/VinylFix/VinylFix.dll`.
+
+## More
+
+- [CHANGELOG.md](CHANGELOG.md): what changed in each version.
+- [CONTRIBUTING.md](CONTRIBUTING.md): reporting problems, changing the code and making a release.
+- [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md): license of the RED4ext.SDK code built into the plugin.
